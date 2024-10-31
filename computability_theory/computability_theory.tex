@@ -1,0 +1,138 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{amssymb,amsfonts,amsmath,calc,tikz,pgfplots,geometry}
+\usepackage{color}   %May be necessary if you want to color links
+\usepackage{hyperref}
+\usepackage{amsthm}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\usetikzlibrary{positioning}
+\geometry{margin=1in}
+\pgfplotsset{compat=1.18}
+\setlength{\headheight}{14.6pt}
+\addtolength{\topmargin}{-1.6pt}
+\hypersetup{
+    colorlinks=false, %set true if you want colored links
+    linktoc=all,   %set to all if you want both sections and subsections linked
+    linkcolor=black,  %choose some color if you want links to stand out
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{remark}{Remark}[section]
+\newtheorem{example}{Example}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\DeclareMathOperator{\lcm}{lcm}
+\DeclareMathOperator{\idealin}{\triangleleft}
+\DeclareMathOperator{\im}{im}
+\DeclareMathOperator{\Aut}{Aut}
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\Inn}{Inn}
+\DeclareMathOperator{\Out}{Out}
+\DeclareMathOperator{\Mat}{Mat}
+\DeclareMathOperator{\std}{std}
+\DeclareMathOperator{\Int}{Int}
+\DeclareMathOperator{\diam}{diam}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\Omicron}{O}
+\newcommand{\st}{\text{ s.t. }}
+\newcommand{\tand}{\quad \text{and} \quad}
+\newcommand{\tor}{\quad \text{or} \quad}
+\newcommand{\ip}[2]{\langle #1, #2 \rangle}
+\newcommand{\set}[2]{ \left\{ #1 \mid #2 \right\} }
+\newcommand{\abs}[1]{\left\lvert #1\right\rvert}
+\newcommand{\norm}[1]{\left\lVert #1\right\rVert}
+\renewcommand{\tt}[1]{\textnormal{\textbf{(#1).}}} %tt=theorem title
+\newcommand{\bigslant}[2]
+{{\raisebox{.2em}{$#1$}\left/\raisebox{-.2em}{$#2$}\right.}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{\textbf{Computability Theory}}
+\author{}
+\date{}
+\begin{document}
+	\maketitle
+	\newpage
+  \section{Turing Machines}
+  \textbf{The undecidability problem:}\
+  Does there exist a ``definite method'' that, 
+  when given any possible statement in mathematics, 
+  can decide whether that statement is true or false?
+
+  Alan Turing set out with the goal of showing that the answer to this
+  problem is no.
+  First, in order to prove that there is not algorithm capable of determining
+  whether a mathematical statement is false, we need to formally define
+  what an algorithm is, and once we have a sensible definition, it could
+  be shown that no algorithm under this definition satisfies the
+  undecidablity problem.
+
+  In order to mimic the ability to follow algorithms, we find useful
+  considering the way we solve problems ourselves.
+  We can notice, that when we are faced with a problem, in order to solve
+  it we may need to write stuff down, we may need to read stuff, and
+  sometimes we may need to perform certain operations with the data
+  we gathered. These different operations can be interpreted as states
+  of thinking, and the model we are about to define models exactly what
+  we described so far.
+
+  \begin{definition}[Turing machine]
+    A Turing machine is a $7$-tuple 
+    $M = (Q,\Gamma,b,\Sigma,\delta,q_{0},F)$
+    such that:
+    \begin{itemize}
+      \item $Q$ is a finite, nonempty set.
+        The elements of $Q$ are called states;
+      \item $q_0 \in Q$ is called the initial state;
+      \item $F \subseteq Q$ is a set of final states, or accepting states;
+      \item $\Gamma$ is a finite, nonempty set such that 
+        $Q \cap \Gamma = \emptyset$. The elements of $\Gamma$ are called
+        the tape alphabet symbols;
+      \item $\Sigma \subsetneq \Gamma$ is called the set of input symbols;
+      \item $b \in \Gamma \setminus \Sigma$ is called the blank symbol;
+      \item $\delta \colon (Q \setminus F) \times \Gamma \to 
+        Q \times \Gamma \times \{L, R, S\}$ is called the transition 
+        function.
+      \end{itemize}
+  \end{definition}
+
+  In order to define a computation on a Turing machine we first have
+  to define a configuration (a momentary state) of the machine.
+
+  \begin{definition}[Configuration]
+    A configuration (a momentary state) of a Turing machine $M$ is
+    a triple $C = (\alpha, q, i)$ such that:
+    \begin{itemize}
+      \item $q \in Q$ is a state of $M$ called the current state of the
+        computation;
+      \item $\alpha \in \Gamma^*$ is a finite string of letters from $\Gamma$
+        that is called the tape content;
+      \item $i \in \N$ is a natural number that is called the head's 
+        position.
+    \end{itemize}
+    Additionally, the initial configuration of $M$ on input $x$ is
+    the configuration $(x,q_0,0)$.
+  \end{definition}
+
+  \begin{definition}[Finite configuration]
+    A finite configuration is any configuration $(\alpha,q,i)$ such that
+    $q \in F$.
+  \end{definition}
+
+  
+
+  
+  
+
+
+
+\end{document}
