@@ -112,10 +112,10 @@
     A configuration (a momentary state) of a Turing machine $M$ is
     a triple $C = (\alpha, q, i)$ such that:
     \begin{itemize}
-      \item $q \in Q$ is a state of $M$ called the current state of the
-        computation;
       \item $\alpha \in \Gamma^*$ is a finite string of letters from $\Gamma$
         that is called the tape content;
+      \item $q \in Q$ is a state of $M$ called the current state of the
+        computation;
       \item $i \in \N$ is a natural number that is called the head's 
         position.
     \end{itemize}
@@ -127,11 +127,208 @@
     A finite configuration is any configuration $(\alpha,q,i)$ such that
     $q \in F$.
   \end{definition}
+  
+  \begin{definition}[Computational step]
+    A computational step of a Turing machine $M$ is a change from
+    configuration $(\alpha,q,i)$ to configuration $(\beta,p,j)$.
+    A computational step is said to be legal if
+    $\delta(q,\alpha[i]) = (p,\gamma,X)$ such that
+    \begin{itemize}
+      \item The head moved according to $X$:
+        \[
+          j =
+          \begin{cases}
+            i + 1, &X=R \\
+            \max\{0,i-1\} &X=L \text{ 
+            (the head can't move left at the beginning of the tape)} \\
+            i, &X=S
+          \end{cases}.
+        \]
+      \item We inserted $\gamma$ correctly as such:
+        \[
+          \beta =
+          \begin{cases}
+            \alpha_0 \cdots \alpha_{i-1} \gamma \alpha_{i+1} \cdots \alpha_n,
+            &i < n \tor i = n \text{ and } X \neq R \\
+            \alpha_0 \cdots \alpha_{n-1} \gamma b, &i = n \text{ and } X = R
+          \end{cases}.
+        \]
+    \end{itemize}
+  \end{definition}
+  \begin{remark}
+    Let $C$, $C'$ are two configurations.
+    We denote $C \vdash C'$ if a computational step from $C$ takes us
+    to $C'$.
+    In this case we say that $C'$ is the succeeding computational step
+    of $C$.
+  \end{remark}
 
+  \begin{definition}[Computation]
+    A computation (or a run) of a Turing machine $M$ on input $x$ is a
+    sequence of configurations $C_0,C_1,C_2,\dots$ such that
+    \begin{itemize}
+      \item $C_0$ is the initial configuration of $M$ on $x$.
+      \item For all $i$, if there exists a configuration $C$ such that
+        $C_i \vdash C$, then $C_{i+1} = C$.
+    \end{itemize}
+  \end{definition}
   
+  If in a computation there exists $n$ such that $C_n$ is a final 
+  configuration we say that the computation end and the machine halts.
 
-  
-  
+  \begin{definition}[Output]
+    Let $M$ be a machine that halts on a configuration $C = (\alpha,q,i)$.
+    The output of the computation is $\alpha_0 \alpha_1 \cdots \alpha_{i-1}$,
+    that is, all of the characters to the left of the head.
+    If there are no such characters we say that the output is $\varepsilon$.
+  \end{definition}
+  \begin{remark}
+    The output of a computation is $\varepsilon$ if and only if the head's
+    position is $0$ at the end of the computation.
+  \end{remark}
+  \begin{remark}
+    If the computation of $M$ on $x$ is infinite, we say that $M$ does not
+    halt on $x$, and the output of $M$ on $x$ is undefined.
+  \end{remark}
+
+  This makes a Turing machine some kind of function, that accepts tapes
+  as input, and outputs finite strings.
+
+  \begin{definition}[Functions computed by Turing machine]
+    Let $M$ be a Turing machine.
+    The function that $M$ computes is the function
+    $f_M \colon \Sigma^* \to \Gamma^*$ defined as such:
+    \begin{itemize}
+      \item If the output of $M$ on $x$ is $y$ then $f_M(x) = y$.
+      \item If the output of $M$ on $x$ is undefinedm then $f_M(x)$
+        is undefined (this is sometimes denoted as $f_M(x) = \perp$).
+    \end{itemize}
+  \end{definition}
+
+  \begin{definition}[Total function]
+    A function $f_M$ computed by a Turing machine $M$ is said to be
+    total if $f_M \colon \Sigma^* \to \Gamma^*$ is defined on all of
+    its domain. That is, $M$ halts for any input $x$.
+  \end{definition}
+
+  \begin{example}
+    We want to construct the Turing machine that computes the function
+    $f(x) = 0x$.
+    In other words, the machine returns our input preceded by the letter $0$.
+    We will define the machine $M = (Q,q_0,F,\Gamma,\Sigma,b,\delta)$ as
+    such:
+    \[
+      Q = \{q_0,q_1,q_f\} \tand
+      F = \{q_f\} \tand
+      \Gamma = \{0,1,b\} \tand
+      \Sigma = \{0,1\}
+    \]
+    and define the transition function $\delta$ as such:
+    \begin{center}
+      \begin{tabular}{|l|l|l|l|}
+        \hline
+              & $0$         & $1$         & $b$         \\ \hline
+        $q_0$ & $(q_0,0,R)$ & $(q_1,0,R)$ & $(q_f,0,R)$ \\ \hline
+        $q_1$ & $(q_0,1,R)$ & $(q_1,1,R)$ & $(q_f,1,R)$ \\ \hline
+      \end{tabular}
+    \end{center}
+    Structural induction can be used to prove correctness, but it will
+    be ommited.
+  \end{example}
+
+  \subsection{Equivalence of models}
+  Now that we have defined computations on a Turing machine, we have the
+  ability to prove statements about the computability of all algorithms.
+  In order to describe algorithms, depeding on the algorithm we may find
+  it easier to implement it with a different computation model.
+  For these cases we consider different models equivalent to the Turing
+  machine.
+
+  \begin{example}
+    We define $M$ to be a fast Turing machine just like a normal Turing 
+    machine, but with the ability to move two steps if wanted.
+
+    In order to prove the model of the fast Turing machine is equivalent
+    to the Turing machine, we need to show that
+    \begin{enumerate}
+      \item[(1)] for any Turing machine $M$ there exists a fast Turing machine
+        such that $f_M = f_{M'}$.
+      \item[(2)] for any fast Turing machine $M$ there exists a Turing machine
+        such that $f_M = f_{M'}$.
+    \end{enumerate}
+    Proving $(1)$ is rather easy because we can ignore the additional
+    functionality of the Fast turing machine when creating it.
+
+    In order to prove $(2)$ there's more work to do.
+    Let $M = (Q,q_0,F,\Gamma,\Sigma,b,\delta)$ be a fast Turing machine.
+    We define a new Turing machine $M = (Q',q_0,F,\Gamma,\Sigma,b,\delta')$
+    such that for
+    \begin{align*}
+      Q_R &= \set{q^R}{q \in Q} \\
+      Q_L &= \set{q^L}{q \in Q}
+    \end{align*}
+    we have $Q' = Q \cup Q_L \cup Q_R$.
+    We interpret the states in $Q_L$ and $Q_R$ as ``stay in the current state
+    without changing the content of the tape and move one step to the left
+    or right accordingly''.
+    We define $\delta'$ as follows:
+    \begin{itemize}
+      \item For $p = q^R$ we define $\delta'(p,\sigma) = (q,\sigma,R)$.
+      \item For $p = q^L$ we define $\delta'(p,\sigma) = (q,\sigma,L)$.
+      \item For $p \in Q$ we denote $\delta(p,\sigma) = (r,\tau,X)$ and
+        define
+        \[
+          \delta'(p,\sigma) =
+          \begin{cases}
+            (r,\tau,X), &X \in \{L,R,S\} \\
+            (r^L,\tau,X), &X = RR \\
+            (r^L,\tau,X), &X = LL
+          \end{cases}.
+        \]
+    \end{itemize}
+    It should be clear by this definition that $f_M = f_{M'}$.
+    However, it is also easy to see why $M$ is called a ``fast'' Turing
+    machine as although $M'$ reaches the same finite state as $M$ in
+    all computations, $M$ can do reach it with less computation steps.
+  \end{example}
+
+  \begin{example}[$k$-tape Turing machine]
+    The explanation of the equivalence of a $k$-tape Turing machine and
+    a stadard Turing machine will be rather intuitive, as formalizing
+    everything is quite standard.
+
+    Let $k$ be a natural number greater than $0$.
+    A $k$-tape Turing machine is defined much like the standard Turing
+    machine, but since we want to think of this machine as having
+    multiple tapes, the transition function is defined as
+    \[
+      \delta \colon (Q \setminus F) \times \Gamma^k \to
+      Q \times \Gamma^k \times \{L, R, S\}^k.
+    \]
+    It is clear that any Turing machine can be described using a $k$-tape
+    Turing machine, and thus we will only explain why the other side of
+    the quivalence is also true.
+
+    The main three challenges are proving we can describe $k$-tapes
+    on a single tape, know the positions of the $k$ heads at each step
+    of the computation, and executing the computation itself.
+    \begin{itemize}
+      \item (describing $k$ tapes) A simple way to describe $k$ tapes
+        is to add a special symbol $\$$ that is not part of the original
+        tape alphabet symbols, and then write the contents of each tape
+        in a row, using the symbol $\$$ to seperate the contents of the
+        different tapes.
+      \item (Identifying positions of $k$-heads) In order to identify the 
+        positions of $k$ heads 
+    \end{itemize}
+  \end{example}
+
+
+
+
+
+
+
 
 
 
