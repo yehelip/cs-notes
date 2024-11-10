@@ -16,6 +16,266 @@
 \tableofcontents
 \newpage
 
+\section{Introduction}
 
+\subsection{Abstract data types}
+
+\begin{example}
+	How can we make a data structure for $15,\!000$ students
+	that allows insertion and access to students by their id
+	in time complexity of $O(1)$.
+\end{example}
+
+Data structures appear everywhere.
+
+\begin{definition}[Abstract data type]
+    To be added.
+\end{definition}
+
+\begin{example}[Stack]
+    A stack has multiple basic fuctionalities.
+    \begin{itemize}
+        \item \texttt{push(S,x)} - add \texttt x to the top of the stack.
+        \item \texttt{top(S)} - access top of the stack. Return null
+            in the stack is empty.
+        \item \texttt{pop(S)} - deletes the element on the top of the
+            stack. Does not affect an empty stack.
+        \item \texttt{create()} - returns an empty stack.
+        \item \texttt{is\_empty(S)} returns an empty stack.
+    \end{itemize}
+\end{example}
+
+We can implement this abstract data structure using either
+an array, or a list. Which is more efficient?
+
+A clear disadventage of an array is that the size of the
+stack is limited.
+
+A disadventage of a list is that our memory is limited.
+
+In the real world we use a list of arrays.
+We define an array of size $N$ to implement the stack, and when
+we reach the maximum capacity of the array, we link
+a new array of size $N$.
+
+\begin{exercise}
+    What is the absract data type defined by the functions
+    \begin{itemize}
+        \item \texttt{create(c)} - returns an initial instance.
+        \item \texttt{read(c)} - returns an integer.
+        \item \texttt{read(create(c))} - returns \texttt 0.
+        \item \texttt{increment(c)} - changes \texttt c such that 
+            \texttt{read(increment(c) = read(c) + 1}.
+    \end{itemize}
+\end{exercise}
+
+The surprising answer is a counter!
+\begin{itemize}
+    \item \texttt{create(c)} - allocates memory to an integer $c$.
+    \item \texttt{read(c)} - returns \texttt c.
+    \item \texttt{increment(c)} - changes \texttt c such that 
+        \texttt{c = c + 1}.
+\end{itemize}
+
+But there is a problem since there could be overflow!
+How can we solve this?
+
+\begin{example}[Queue]
+    A queue has multiple basic fuctionalities.
+    \begin{itemize}
+        \item \texttt{enqueue(Q,x)} - add $x$ to the end of the queue.
+        \item \texttt{head(S)} - access start of the stack. Return null
+            in the queue is empty.
+        \item \texttt{dequeue(S)} - deletes the first element of the queue,
+            and return the first element of the modified queue.
+            Does not affect an empty queue.
+        \item \texttt{create()} - returns an empty queue.
+        \item \texttt{is\_empty($S$)} returns true if the queue is empty.
+    \end{itemize}
+\end{example}
+
+We can implement a queue using an array, or a linked list.
+
+In \texttt{c++} we can implement an abstract data type in multiple ways, then
+by using
+% \[
+%     typedef ArrayBasedStack Stack;
+%     typedef ListBasedStack Stack;
+% \]
+
+The quality of the implementation is affected by the time and space complexity
+of the functions, and the simplicity of the implementation.
+
+\subsection{Time complexity}
+
+\begin{definition}[Run time]
+    The run time of algorithm $A$ on input $x$ is the number of machine
+    commands that the algorithm runs on the input.
+    We denote it $\mathrm{time}_A(x)$.
+\end{definition}
+\begin{remark}
+    We don't need to bother about the different in machines that execute
+    the commands, and we also don't bother about the difference in run-time
+    of different commands.
+\end{remark}
+
+Since we can't possibly write the run time for all inputs, we denote:
+\[
+    \mathrm t_A(n) = \max\set{\mathrm{time}_A(x) \mid |x| = n}.
+\]
+
+\begin{example}[For loop]
+    Consider the following code:
+
+    we have that
+    \[
+        n + 1 \le \mathrm t_A(n) \le c_1 \cdot n + c_2.
+    \]
+    Where $c_1$, $c_2$ are constants that depend on the the implementation
+    of the specific programming language.
+\end{example}
+
+\begin{example}[check prime]
+    Consider the following code:
+
+    We have that
+    \begin{align*}
+        &\timeop(9888) = c_1 + c_2 \\
+        &\timeop(9973) = 9971 \codt c_1 + c_2 \\
+        &\timeop(4) = 9971 \codt c_1 + c_2 \\
+        &\timeop(n) = 10^n \cdot c_1 + c_2
+    \end{align*}
+\end{example}
+\begin{remark}
+    Notice that we talk about the \emph{size} of the input and not the 
+    \emph{value} of the input.
+    Here $n$ is the ?????
+\end{remark}
+
+As we said earlier we don't really care about the constants.
+
+We can think about $f(n)$ the function of the real time of the algorithm.
+
+\begin{definition}
+    Let $f(n)$, $g(n)$ be two positive functions defined on the natural
+    numbers.
+    We say that $f(n) \in O(g(n))$ if exist $c > 0$ and $n_0 > 0$ such
+    that for all $n > n_0$ we have $f(n) \le c \cdot g(n)$.
+\end{definition}
+
+If $f(n) \in O(g(n))$ we usually denote $f(n) = O(g(n))$ and say that
+$g(n)$ is an asymptotoic bound of $f(n)$.
+
+\begin{proposition}
+    Let $k$ be a constant. Then
+    \[
+        f(n) = \sum_{i=0}^{k} a_k n^k = O(n^k).
+    \]
+\end{proposition}
+\begin{proof}
+    Let $a_{\max} = \max\set{1,a_0,\dots,a_k}$.
+    Then we have
+    \[
+        f(n) \le a_{\max}(1 + n + \dots + n^k) =
+        a_{\max} \frac{n^{k+1}}{n-1} \le
+        a_{\max} \frac{n^{k+1}}{n/2} = 2 a_\max n^k.
+    \]
+    Thus we can choose $n_0 = 2$ and $c = 2 a_\max$ and then
+    $f(n) \le c \cdot n^k$ for all $n > n_0$.
+\end{proof}
+
+Here are a couple more examples:
+\begin{align*}
+    &f(n) = 10006 = O(1) (Constant) \\
+    &f(n) = 4n + 27 =O(n) (Linear) \\
+    &f(n) = n \log_2(n) + 3n^2 = O(n^2) (Polynomial)
+\end{align*}
+
+\begin{proposition}
+    For all $a,b > 1$ we have that
+    \[
+        f(n) = \log_a(n) = O(\log_b(n)).
+    \]
+\end{proposition}
+
+A polynomial is stronger than any logarithm.
+
+\begin{proof}
+    For all $\epsilon > 0$ and $a > 1$ we have
+    \[ f(n) = \log_a n = \frac{\epsilon \cdot}{a} \].
+\end{proof}
+
+More examples are
+
+\begin{align*}
+    &f(n) = a^n = O(b^n) (Exponential) \\
+    &f(n) = n^k + a^n = O(a^n) \\
+    &f(n) = n \cdot log_2 n = O(n \log n)
+\end{align*}
+
+We can also show that
+
+
+\begin{align*}
+    &f(n) = 3^n \neq O(2^n) (Exponential) \\
+    &f(n) = e^n \neq O(n^k) \\
+    &f(n) = \log n \neq O(\log \log n)
+\end{align*}
+
+\begin{proof}
+    Assume by contradiction that exist $c > 0$ and $n_0 \geq 0$ such that
+    for all $n > n_0$ we have $3^n \le c \dot 2^n$.
+    This implies that $\del{\frac 32}^n \le c$ for all $n > n_0$.
+    But this is obviously a contradiction which completes the proof.
+\end{proof}
+
+\begin{proof}
+    Let $k > 0$.
+    We know from analysis that
+    \[
+        \lim_{x \to \infty} \frac{x^k}{e^x} = 0
+    \]
+    by L'hopital which imlies that $e^n \neq O(n^k)$ for all $k > 0$
+    as wanted.
+\end{proof}
+
+\begin{proof}
+    Similarly we have that
+    \[
+        \lim_{n \to \infty} \frac{\log \log n}{\log n} = 0
+    \]
+    which completes the proof.
+\end{proof}
+
+\begin{example}
+    Summing elements of an arary of length $n$ is $O(n)$.
+\end{example}
+
+\begin{example}[Multiplying matrices]
+    When multiplying matrices of order $m \times m$ the complexity
+    of the algorithm is $O(m)$.
+    But $m$ is not the size of the input.
+    Sinc the input is of $2$ matrices it is equal $2m^2$.
+    Therefore
+    \[
+        T(n) = O(m^3) = O\del{\frac{n^{\frac 32}}{2^{\frac 32}}} =
+        O(n^{\frac 32})
+    \]
+\end{example}
+
+\begin{example}[Binary search]
+    In a binary search we have that the algorithm executes some commands
+    on input of size $n$, and then it executes the same commands on input
+    of size
+\end{example}
+
+\begin{example}[Weird loops]
+    Consider the following code:
+    Roughly we have that
+    \[
+        T(n) \le n (n - 1) = O(n^2).
+    \]
+    But more precisely we have that
+\end{example}
 
 \end{document}
