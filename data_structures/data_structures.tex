@@ -143,8 +143,8 @@ Since we can't possibly write the run time for all inputs, we denote:
     We have that
     \begin{align*}
         &\timeop(9888) = c_1 + c_2 \\
-        &\timeop(9973) = 9971 \codt c_1 + c_2 \\
-        &\timeop(4) = 9971 \codt c_1 + c_2 \\
+        &\timeop(9973) = 9971 \cdot c_1 + c_2 \\
+        &\timeop(4) = 9971 \cdot c_1 + c_2 \\
         &\timeop(n) = 10^n \cdot c_1 + c_2
     \end{align*}
 \end{example}
@@ -180,9 +180,9 @@ $g(n)$ is an asymptotoic bound of $f(n)$.
     \[
         f(n) \le a_{\max}(1 + n + \dots + n^k) =
         a_{\max} \frac{n^{k+1}}{n-1} \le
-        a_{\max} \frac{n^{k+1}}{n/2} = 2 a_\max n^k.
+        a_{\max} \frac{n^{k+1}}{n/2} = 2 a_{\max} n^k.
     \]
-    Thus we can choose $n_0 = 2$ and $c = 2 a_\max$ and then
+    Thus we can choose $n_0 = 2$ and $c = 2 a_{\max}$ and then
     $f(n) \le c \cdot n^k$ for all $n > n_0$.
 \end{proof}
 
