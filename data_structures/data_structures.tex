@@ -7,6 +7,8 @@
 
 \input{../header.tex}
 
+
+
 \begin{document}
 \maketitle
 
@@ -111,7 +113,7 @@ of the functions, and the simplicity of the implementation.
 \begin{definition}[Run time]
     The run time of algorithm $A$ on input $x$ is the number of machine
     commands that the algorithm runs on the input.
-    We denote it $\mathrm{time}_A(x)$.
+    We denote it $\timeop_A(x)$.
 \end{definition}
 \begin{remark}
     We don't need to bother about the different in machines that execute
@@ -121,7 +123,7 @@ of the functions, and the simplicity of the implementation.
 
 Since we can't possibly write the run time for all inputs, we denote:
 \[
-    \mathrm t_A(n) = \max\set{\mathrm{time}_A(x) \mid |x| = n}.
+    \mathrm t_A(n) = \max\set{\timeop_A(x) \mid |x| = n}.
 \]
 
 \begin{example}[For loop]
@@ -186,9 +188,9 @@ $g(n)$ is an asymptotoic bound of $f(n)$.
 
 Here are a couple more examples:
 \begin{align*}
-    &f(n) = 10006 = O(1) (Constant) \\
-    &f(n) = 4n + 27 =O(n) (Linear) \\
-    &f(n) = n \log_2(n) + 3n^2 = O(n^2) (Polynomial)
+    &f(n) = 10006 = O(1) \text{ (Constant)} \\
+    &f(n) = 4n + 27 =O(n) \text{ (Linear)} \\
+    &f(n) = n \log_2(n) + 3n^2 = O(n^2) \text{ (Polynomial)}
 \end{align*}
 
 \begin{proposition}
@@ -202,13 +204,13 @@ A polynomial is stronger than any logarithm.
 
 \begin{proof}
     For all $\epsilon > 0$ and $a > 1$ we have
-    \[ f(n) = \log_a n = \frac{\epsilon \cdot}{a} \].
+    \[ f(n) = \log_a n = \frac{\epsilon \cdot}{a}. \]
 \end{proof}
 
 More examples are
 
 \begin{align*}
-    &f(n) = a^n = O(b^n) (Exponential) \\
+    &f(n) = a^n = O(b^n) \text{ (Exponential)} \\
     &f(n) = n^k + a^n = O(a^n) \\
     &f(n) = n \cdot log_2 n = O(n \log n)
 \end{align*}
@@ -217,7 +219,7 @@ We can also show that
 
 
 \begin{align*}
-    &f(n) = 3^n \neq O(2^n) (Exponential) \\
+    &f(n) = 3^n \neq O(2^n) \text{ (Exponential)} \\
     &f(n) = e^n \neq O(n^k) \\
     &f(n) = \log n \neq O(\log \log n)
 \end{align*}
