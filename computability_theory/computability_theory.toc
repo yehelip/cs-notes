@@ -1,2 +1,0 @@
-\contentsline {section}{\numberline {1}Turing Machines}{3}{section.1}%
-\contentsline {subsection}{\numberline {1.1}Equivalence of models}{5}{subsection.1.1}%
