@@ -280,4 +280,381 @@ We can also show that
     But more precisely we have that
 \end{example}
 
+\begin{definition}
+    Let $f(n)$, $g(n)$ be two positive functions defined on the natural
+    numbers.
+    We say that $f(n) \in \Omega(g(n))$ if exist $c > 0$ and $n_0 > 0$ such
+    that for all $n > n_0$ we have $f(n) \geq c \cdot g(n)$.
+\end{definition}
+
+\begin{remark}
+  \[
+    g(n) = O(f(n)) \iff
+    f(n) = \Omega(g(n))
+  \]
+\end{remark}
+
+\begin{definition}
+    Let $f(n)$, $g(n)$ be two positive functions defined on the natural
+    numbers.
+    We say that $f(n) = \Theta(g(n))$ if 
+    $f(n) = O(g(n))$ and $f(n) = \Omega(g(n))$.
+\end{definition}
+
+\begin{example}
+  We have that $H_n = \Theta(\ln n)$ because
+  \[
+    \ln(n + 1) = \int{1}^{n+1}
+  \]
+\end{example}
+
+\begin{definition}
+    Let $f(n)$, $g(n)$ be two positive functions defined on the natural
+    numbers.
+    We say that $f(n) = o(g(n))$ if 
+    \[
+      \lim_{n \to \infty} \frac{f(n)}{g(n)} = 0.
+    \]
+\end{definition}
+
+\begin{example}
+\end{example}
+
+Note that asymptotic complexity isn't always what we want to optimize.
+
+\begin{example}
+  Suppose algorithm $A$ has a running time of $\t_A(n) = 100n$, and
+  algorithm $B$ has a running time of $\t_B(n) = 5 n \log_2 n$.
+  Asympotically algorithm $A$ is better because it is linear, but
+  for algorithms with $n < 2^{20}$ algorithm $B$ is more efficient.
+\end{example}
+\begin{example}
+  We would rather have $\t_A(n) = n^2$ than $\t_B(n) = 10^{160}$
+  even though $B = O(1)$.
+\end{example}
+
+
+\section{Arrays, matrices, sparse matrices and linked lists}
+\subsection{Arrays}
+
+\begin{example}[Array]
+    An array has multiple basic fuctionalities.
+    \begin{itemize}
+        \item \texttt{create(type,I)} - returns an array of elements of type
+          \texttt{type} with the index set \texttt I.
+        \item \texttt{store(A,i,e)} - stores \texttt e of type \texttt{type}
+          with index \texttt i to the array.
+          This usually looks like \texttt{A[i] = e}.
+        \item \texttt{get(A,i)} - returnes the element in index \texttt i.
+          This usually looks like \texttt{A[i]}.
+    \end{itemize}
+\end{example}
+
+All the values in the array are of the same type.
+Notice that we didn't define what happens if we try to store an element
+of a different type, or what to return when we use get on an uninitialized
+value.
+
+Here are some examples of implementations.
+
+\begin{example}[Continuous memory block]
+  This is the most trivial implementation.
+  In this way we have
+  \begin{itemize}
+    \item The functions \texttt{store} and \texttt{get} in $O(1)$
+    \item TO BE CN
+  \end{itemize}
+\end{example}
+
+\begin{example}[Multiple continuous memory block of size $n$]
+  To implemet an array of size $m$ we need to allocate $k = \ceil{m / n}$
+  blocks.
+  In this way we only need to keep a pointer array to the start of each block.
+  To access an element in this kind of array, we can use basic arithmetics.
+  For example, if $n = 6$ and $i = 16$ the address of $A[16]$ is
+  \[
+    base\del{\floor{\frac{16}{6}}} + 16 \% 6 = base\del{2} + 4
+  \]
+  where $base$ is the pointer array to the start of the blocks.
+  The address computation time is still $O(1)$.
+\end{example}
+
+\begin{example}[$2d$-array]
+  In a $2d$-array $A[i][j]$ each row $A[i]$ is a $1d$-array of size $n$.
+  To find the element in $A[i][j]$ we can calculate
+  \[
+    base + i \cdot n + j
+  \]
+  where $base$ is the beginning of the array.
+\end{example}
+
+\begin{example}[$n$-dimensional array]
+  An $n$-dimensional array is very similar to a $2$-dimensional array.
+  To find the address of $A[i_d]\dots[i_1]$ we get
+  \[
+    base + i_d \cdot n_{d-1} \cdots n_1 + i_{d-1} n_{d-2} \cdots n_1 +
+    \cdots + i_1
+  \]
+  The number of operations in this calculations is $O(n^2)$.
+  \begin{question}
+    Is there a way to optimize this calculation.
+  \end{question}
+  \begin{answer}
+    Yes! using Horner's method we can do the same computation in a linear
+    amount of operations.
+  \end{answer}
+\end{example}
+
+\begin{remark}
+  In general, when scanning the elements of an $n$-dimensional array
+  it is better to scan them by rows and not by columns because of 
+  \emph{locality}. It is easier for the computer to access memory that
+  is close to the previously accessed memory.
+  Reading memory is more expensive than than calculting an operation in the GPU.
+\end{remark}
+
+\subsection{Initializing an array in \texorpdfstring{$O(1)$}{O(1)}}
+In the trivial way, initializing an array of size $n$ takes $O(n)$ operations.
+We want to initialze an array in $O(1)$, for this, we will use more memory.
+
+\begin{example}[First try]
+  We will also allocate an auxillary array of size $n$.
+  Each time we store a value in index $i$ we add index $i$ to the top
+  of the auxillary array.
+  In this way, before trying to access to array, we check if index $i$
+  is in the auxillary array, and if not, return $0$ (if we wanted to initialize
+  the array in $0$).
+
+  This implementation is problamatic because when accessing the element
+  in index $i$ we first need to scan the auxillary array which takes
+  $O(n)$ operations.
+\end{example}
+
+\begin{example}[Second try]
+  This time, we will hold three arrays.
+  An array for values, shortcuts, and indexes with value.
+  In this way, when accessing an element in the index $i$, we first
+  check if the shortcuts array in index $i$.
+\end{example}
+
+To implement this we first define the function
+
+% int  is_assigned(int i) {
+% return ( B[i] < top  &&  B[i] >= 0  &&  C[B[i]] = = i );  
+% }
+%
+% And then implement the rest of the functions by
+%
+% top = 0;
+% constant = const;
+%
+% if  (is_assigned(i)) 
+%          return  A[i];
+% else 
+%          return constant;
+%
+% f  (!is_assigned(i)) {
+%       C[top] = i ;
+%       B[i] = top ;
+%       top = top +1;}
+% A[i]= e;
+
+\begin{remark}
+  After $top \geq n$ we don't have to use the auxillary arrays anymore.
+\end{remark}
+
+Merits
+\begin{itemize}
+  \item Asymptotically this is a great solution.
+  \item Practically
+\end{itemize}
+
+Demertis
+\begin{itemize}
+  \item Takes three times more space.
+  \item The initialization time is later backstabbed by the new implementations
+    of \texttt{get} and \texttt{store} (amortized analysis).
+\end{itemize}
+
+\subsection{Matrices}
+
+\begin{example}[Symmetrical matrices]
+  Suppose we have a matrix like
+  \[\begin{pmatrix}
+    1 & 2 & 4 & 7 & 12 \\
+    2 & 3 & 5 & 8 & 1 \\
+  \end{pmatrix}\]
+  We can just hold some
+
+  To calculate the address we get
+\end{example}
+
+\begin{example}[Sparse matrix]
+  A sparse matrix is a matrix where most elements are $0$ (or some other
+  constant).
+
+  \begin{definition}[Sparse matrix]
+    If $M_1,\dots,M_n$ is a sequence of matrices where the number of elements
+    different from some constant $c$ is $o(m(n))$ where $m(n)$ is the number
+    of elements in the $n$th matrix then it is a sequence of sparse matrices.
+  \end{definition}
+
+  \begin{example}
+    Diagonal matrices are sparse matrices.
+  \end{example}
+
+  \begin{remark}
+    In sparse matrices of order $n \times n$ the number of elements different
+    than $c$ is $o(n^2)$.
+  \end{remark}
+
+  One way to represent these matrices is by a lexicographical list
+  of triples $(i,j,A_{i,j})$ that represent the values different than $c$
+  in the matrix.
+  On one hand, we lose \texttt{get} in constant time.
+  On the other hand, in this way allocation is way more efficient.
+  Addition and multiplication of sparse matrices are way more efficient.
+
+  \begin{example}[Addition of sparse matrices]
+    Addition in usual matrices of order $n \times n$ takes $o(n^2)$ time.
+    When adding sparse matrices in this repersentation, adding them is as
+    bad as combining their lists (of elemenets different from $c$).
+    Suppose their lists are of size $m$ and $k$, the time complexity is
+    now only $o(m + k)$.
+  \end{example}
+\end{example}
+
+\subsection{Linked lists}
+
+Recall that a linked list
+
+% % Add recalling
+%
+% The implementation looks something like this:
+%
+% init(head)
+%
+% void  init (NODE  *head){
+% * head = NULL;
+% }
+%
+% find(x,head)
+%
+% NODE * find (DATA_TYPE x, NODE  *head){
+% NODE *t;
+% t = head;
+% while (t!=NULL && t → info != x)
+%  t = t → next ;
+% return t;
+% }
+%
+% insert(t,x)
+%
+% int  insert ( NODE  *t,  DATA_TYPE x){
+% NODE *p;
+% if (t == NULL) return 0;
+% p = (NODE *) malloc (sizeof (NODE));
+% p → info = x;
+% p → next = t → next ;
+% t → next  = p ;
+% return 1;
+% }
+%
+% delete(t)
+%
+% delete ( NODE  *t){
+% NODE  * temp ;
+% temp = t → next;
+% t → next = temp → next ;
+% free (temp) ;
+% }
+%
+% delete_first(r)
+%
+% int delete_first ( NODE  **p_head){
+% NODE  * temp ;
+% if (*p_head == NULL)  return 0 ;           
+% temp = *p_head;
+% *p_head = temp → next ;
+% free (temp) ;
+% return 1;            /* success code */
+% }
+
+There are different kinds of linked lists.
+
+\begin{example}[Dummy node linked list]
+  A dummy node linked list is just like a standard linked list,
+  with an additional node at the beginning without any meaningful value
+  to make deletion more easily
+\end{example}
+
+\begin{example}[Cyclic linked list]
+  A linked list where the last element is pointing to the head node.
+  Some merits are
+  \begin{itemize}
+    \item We can reach any element from any element.
+    \item We can concatenate lists in constant time, because we have constant
+      time access to the pointer of the last node.
+  \end{itemize}
+\end{example}
+
+\begin{example}[Doubly linked list]
+  In a doubly linked list we have not only pointers to the next nodes,
+  but also the the previous nodes.
+  Mertis:
+  \begin{itemize}
+    \item We can reach any element from any element.
+    \item Given access to a node $t$ we can delete it in constant time.
+  \end{itemize}
+\end{example}
+
+There is also a tricky deletion in standard linked lists.
+
+TO BE CONTINUED
+
+\subsection{Extra}
+
+Parse polynomials.
+
+\begin{definition}
+  DEFINE
+\end{definition}
+
+Instead of representing sparse polynomials in an array of size of the order
+of the polynomial, we can represent the nonzero coefficients in a linked list
+
+MORE IN PRESENTATION
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 \end{document}
